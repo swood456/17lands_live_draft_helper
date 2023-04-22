@@ -1,3 +1,5 @@
+log_location = "D:/Games/MTG Arena/MTGA/MTGA_Data/Logs/Logs/"
+
 import time
 import json
 import scrython
@@ -92,7 +94,7 @@ def find_cards_17lands(card_id_list):
     return contents.json()["cards"]
 
 
-log_location = "D:/Games/MTG Arena/MTGA/MTGA_Data/Logs/Logs/"
+
 
 def get_current_logfile():
     # I have not much confidence in how python gets stuff back from os
