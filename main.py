@@ -5,12 +5,10 @@ import json
 import scrython
 import requests
 import os
+import sys
 
 from scryfall_scrape import CardInfo
 
-# follow.py
-#
-# Follow a file like tail -f.
 def follow(thefile):
     thefile.seek(0,2)
     while True:
@@ -43,19 +41,12 @@ def watch_draft_pack(line, lands_data):
 
     cards_in_pack = [c for c in cards_in_pack_string.split(",")]
 
-    # print(cards_in_pack)
     cards = find_cards_17lands(cards_in_pack)
-
-    # cards = [find_scryfall_card(card_id) for card_id in cards_in_pack]
-    
-    # # filter nulls, only get names
-    # card_names = [c.name() for c in cards if c]
 
     card_names = [c["name"] for c in cards]
 
     # filter out the basics
     card_names = [c for c in card_names if c not in ["Plains", "Island", "Swamp", "Forest", "Mountain"]]
-
 
 
     print_results(card_names, lands_data)
@@ -89,11 +80,7 @@ def find_cards_17lands(card_id_list):
 
     contents = requests.get(f"{url}?ids={card_id_query}")
 
-    # print(contents.json())
-
     return contents.json()["cards"]
-
-
 
 
 def get_current_logfile():
@@ -102,7 +89,6 @@ def get_current_logfile():
     log_names = []
     for file in os.listdir(log_location):
         if file.endswith(".log"):
-            # log_names.append(file)
             log_names.append(os.path.join(log_location, file))
     
     log_names.sort(reverse=True, key=os.path.getmtime)
@@ -110,6 +96,9 @@ def get_current_logfile():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        log_location = sys.argv[1]
+    
     # Load scraped data
     lands_data = {}
     with open("17lands_results.csv", "r") as csvfile:
@@ -126,5 +115,3 @@ if __name__ == '__main__':
     loglines = follow(logfile)
     for line in loglines:
         watch_draft_pack(line, lands_data)
-
-    # find_scryfall_card(84594)
